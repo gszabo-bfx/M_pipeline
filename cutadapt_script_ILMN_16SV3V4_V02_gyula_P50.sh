@@ -6,6 +6,9 @@ mkdir ${1}fq_in
 mkdir ${1}cut_out
 
 find $1 -name "*.fastq.gz" -exec cp {} ${1}fq_in \;
+find $1 -name "*.fq.gz" -exec cp {} ${1}fq_in \;
+find $1 -name "*.fastq" -exec cp {} ${1}fq_in \;
+find $1 -name "*.fq" -exec cp {} ${1}fq_in \;
 
 for i in ${1}fq_in/*R1_001.fastq.gz
 do
@@ -15,7 +18,7 @@ do
 cutadapt \
 	-g CCTACGGGNGGCWGCAG -a GGATTAGATACCCBDGTAGTC \
 	-G GACTACHVGGGTATCTAATCC -A CTGCWGCCNCCCGTAGG \
-	--cores=60 \
+	--cores=8 \
 	--discard-untrimmed \
 	--max-n 0 \
 	--minimum-length 0 \

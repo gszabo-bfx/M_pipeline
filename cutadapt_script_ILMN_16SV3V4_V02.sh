@@ -6,6 +6,12 @@ mkdir ${1}fq_in
 mkdir ${1}cut_out
 
 find $1 -name "*.fastq.gz" -exec cp {} ${1}fq_in \;
+find $1 -name "*.fq.gz" -exec cp {} ${1}fq_in \;
+find $1 -name "*.fastq" -exec cp {} ${1}fq_in \;
+find $1 -name "*.fq" -exec cp {} ${1}fq_in \;
+
+gzip ${1}/fq_in/*.fastq
+gzip ${1}/fq_in/*.fq
 
 for i in ${1}fq_in/*R1_001.fastq.gz
 do
