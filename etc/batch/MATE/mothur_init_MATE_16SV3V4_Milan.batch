@@ -1,0 +1,121 @@
+# source
+# https://mothur.org/wiki/batch_mode/
+
+##################
+##### Names and labels
+# MOTHUR Project working folder folders
+proj_wd=/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE_Milan
+res_dir=$proj_wd/res_out
+log_out=$proj_wd/log_out
+
+# Project name
+# Prefix for the output files
+proj_name=Milan_MothurBatchProject
+
+#logfile name for this analysis
+log_name=MATE_16SV3V4_project
+
+# set logfile location
+set.logfile(name=$log_out/$log_name)
+# set.logfile(name=/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE_MiSeq_SOP/log_out/MATE_16SV3V4_project)
+
+# fq_in=$proj_wd/fq_mini
+# fq_in=/home/gyula/bfx_sources/MATE/BakaE/MOTHUR_test/fq_mini_mothur/minimini
+fq_in=/home/gyula/bfx_sources/MATE/BakaE/MOTHUR_test/fq_mini_mothur
+
+
+# oligos=$proj_wd/oligos.txt
+
+###############################
+# Variables for MOTHUR functions
+
+#set number of processors to use during analysis
+proc=8
+#set type of data fastq or gz
+fqtype=gz
+# make.contigs
+make_contigs_deltaq=10
+# screen.seq 01 after make.contigs
+screen_seq_01_minl=400
+screen_seq_01_maxl=500
+screen_seq_01_maxamb=8
+screen_seq_01_maxhomop=7
+
+# screen.seq 02 after align.seq
+screen_seq_02_start=1
+screen_seq_02_end=18929
+
+# pcr.seq start end positions
+# 16S ILMN 314F-805R WITH PRIMERS
+# 6388 25316
+# 16S ILMN 314F-805R WITHOUT PRIMERS
+# 6428    23440
+pcr_seq_start=6428    
+pcr_seq_end=23440
+
+# pre.cluster diff
+preCdiff=2
+
+# classify_seqs_cutoff
+classify_seqs_cutoff=80
+
+# contaminents to remove from data in remove.linage
+contaminants=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota
+
+# dist_seqs_cutoff
+dist_seqs_cutoff=0.15
+
+# cluster
+cluster_cutoff=0.15
+cluster_method=average
+
+# get.oturep
+get_oturep_cutoff=0.03
+get_oturep_method=abundance
+
+# rarefaction.single
+rarefaction_single_calc=sobs
+rarefaction_single_freq=100
+
+# Reference source
+# https://mothur.org/wiki/silva_reference_files/
+
+# Set location of lab reference files
+# REFERENCE_LOCATION=/Users/sarahwestcott/Desktop/release
+reference_dir=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR
+
+# ARB extracts
+# Full-length sequences and taxonomy references (145520 bacteria, 3744 archaea, and 15032 eukarya sequences).
+# Release 138.2
+# reference for alignment
+#references for classification
+# alignref_full=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.align
+silva.nr_v138_2.align=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.align
+# taxonref_full=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.tax
+silva.nr_v138_2.tax=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.tax
+# alignref_full_seed=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.align
+silva.seed_v138_2.align_seed=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.align
+# taxonref_full_seed=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.tax
+silva.seed_v138_2.tax=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.tax
+
+# Separate reference datasets
+# Release V102
+# reference for alignment
+alignref_sep_bac=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Separate/V102/silva.bacteria/silva.bacteria.fasta
+taxonref_sep_bac=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Separate/V102/silva.bacteria/silva.bacteria.silva.tax
+
+# RDP reference files
+trainset19_072023.rdp.fasta=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/RDP_ref_files/V19/trainset19_072023.rdp/trainset19_072023.rdp.fasta
+trainset19_072023.rdp.tax=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/RDP_ref_files/V19/trainset19_072023.rdp/trainset19_072023.rdp.tax
+trainset19_072023.pds.fasta=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/RDP_ref_files/V19/trainset19_072023.pds/trainset19_072023.pds.fasta
+trainset19_072023.pds.tax=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/RDP_ref_files/V19/trainset19_072023.pds/trainset19_072023.pds.tax
+
+
+# FINAL REF
+alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.align
+trimmed_alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.pcr.align
+taxonref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.tax
+
+#run generic Standard Operating Procedure
+# ./mothur_pipeline_MATE_Milan.batch
+./mothur_pipeline_MATE_Milan_current.batch

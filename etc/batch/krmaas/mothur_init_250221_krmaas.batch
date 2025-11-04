@@ -1,0 +1,50 @@
+# source
+# https://mothur.org/wiki/batch_mode/
+
+# Project name
+proj_name=krmaas_MothurBatchProject
+
+#logfile name for this analysis
+logname=250221_krmaas_project
+
+# Project wd
+proj_wd=/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_krmaas
+
+# fq_in=$proj_wd/fq_mini
+fq_in=/home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP_PRIMER-TRIMMED/fq_in
+oligos=$proj_wd/oligos.txt
+out_dir=$proj_wd/res_out
+log_out=$proj_wd/log_out
+
+set.logfile(name=$log_out/$logname)
+
+minl=200
+maxl=275
+preCdiff=4
+
+#set location of lab reference files
+# REFERENCE_LOCATION=/Users/sarahwestcott/Desktop/release
+REFERENCE_LOCATION=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR
+
+#set location of my data 
+# DATA=/Users/sarahwestcott/Desktop/MiSeq_SOP
+DATA=$fq_in
+
+#set type of data. ie fastq or gz
+TYPE=gz
+
+#set number of processors to use during analysis
+PROC=8
+
+#reference for alignment
+ALIGNREF=silva.nr_v138_2.align
+
+#references for classification
+TAXONREF_FASTA=trainset9_032012.pds.fasta
+TAXONREF_TAX=silva.nr_v138_2.align
+
+#contaminents to remove from data
+CONTAMINANTS=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota
+
+#run generic Standard Operating Procedure for analysis in the Schloss Lab
+./mothur_pipeline_krmaas_gy.batch

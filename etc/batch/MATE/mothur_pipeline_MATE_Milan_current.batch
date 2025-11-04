@@ -1,0 +1,502 @@
+# commands from MOTHUR MiSeq_SOP
+# https://mothur.org/wiki/miseq_sop/
+#
+#
+
+
+system(echo "New analysis started  at $(date)")
+system(rm $proj_wd/res_out/*)
+
+
+make.file(inputdir=$fq_in, outputdir=$proj_wd/res_out, type=$fqtype, prefix=$proj_name)
+# PAR deltaq=10
+make.contigs(outputdir=$proj_wd/res_out, inputdir=$fq_in, file=current, processors=$proc, deltaq=$make_contigs_deltaq)
+
+set.dir(input=$proj_wd/res_out, output=$proj_wd/res_out)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs after make contigs")
+
+screen.seqs(fasta=current, count=current, minlength=$screen_seq_01_minl, maxlength=$screen_seq_01_maxl, maxhomop=$screen_seq_01_maxhomop, maxambig=$screen_seq_01_maxamb)
+
+system(echo "screen.seqs after make contigs")
+
+# get.current()
+
+summary.seqs(fasta=current, count=current)
+
+unique.seqs(fasta=current, count=current)
+
+summary.seqs(count=current)
+
+system(echo "summary.seqs after unique.seqs")
+
+# is it neccessary?
+# count.groups(count=current)
+
+screen.seqs(fasta=current, count=current, maxambig=0)
+
+summary.seqs(count=current)
+
+system(echo "summary.seqs after screen.seqs maxamb=0")
+
+count.groups(count=current)
+
+sub.sample(fasta=current, count=current, persample=T)
+
+# necessary??
+count.groups(count=current)
+
+system(echo "count.groups after sub.sample")
+
+align.seqs(fasta=current, reference=$alignref)
+
+summary.seqs(fasta=current, count=current)
+
+# PAR
+# start=$screen_seq_02_minl end=$screen_seq_02_maxl 
+screen.seqs(fasta=current, count=current, start=$pcr_seq_start, end=$pcr_seq_end)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs align.seqs and screen.seqs")
+
+filter.seqs(fasta=current, trump=.)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs filter.seqs")
+
+unique.seqs(fasta=current, count=current)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs unique.seqs")
+
+pre.cluster(fasta=current, count=current, diffs=$preCdiff)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs pre.cluster")
+
+chimera.uchime(fasta=current, count=current, dereplicate=T)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs chimera.uchime")
+
+split.abund(cutoff=1, fasta=current, count=current)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs split rare")
+
+set.current(fasta=Milan_MothurBatchProject.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.fasta, count=Milan_MothurBatchProject.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.count_table)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs split abund")
+
+# PAR
+# classify_seqs_cutoff
+classify.seqs(fasta=current, count=current, method=wang, reference=$alignref, taxonomy=$taxonref, cutoff=$classify_seqs_cutoff, output=simple)
+
+system(echo "simple taxa-sample list")
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs classify.seqs")
+
+remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Archaea-Chloroplast-Mitochondria-Eukaryota-unknown)
+
+summary.seqs(fasta=current, count=current)
+
+system(echo "summary.seqs remove.lineage")
+
+summary.tax(taxonomy=current, count=current, output=detail)
+
+
+# summary.tax(taxonomy=current, count=current)
+
+# PAR
+# dist_seqs_cutoff
+dist.seqs(fasta=current, cutoff=$dist_seqs_cutoff)
+
+# PAR
+# cluster_cutoff
+# cluster_method
+cluster(column=current, count=current, cutoff=$cluster_cutoff, method=$cluster_method)
+
+make.shared(list=current, label=0.03, count=current)
+
+count.groups(shared=current)
+
+classify.otu(list=current, taxonomy=current, label=0.03, count=current, basis=sequence, relabund=T)
+
+# PAR
+# get_oturep_cutoff
+# get_oturep_method
+get.oturep(list=current, fasta=current, count=current, method=$get_oturep_method, cutoff=$get_oturep_cutoff)
+
+degap.seqs(fasta=current)
+
+summary.single(shared=current, subsample=T, calc=nseqs-coverage-sobs-chao-ace-shannon-invsimpson)
+
+sub.sample(shared=current)
+
+# PAR
+# rarefaction_single_calc
+# rarefaction_single_freq
+rarefaction.single(shared=current, calc=$rarefaction_single_calc, freq=$rarefaction_single_freq)
+
+
+
+
+
+system(echo "New analysis finished at $(date)")
+
+quit()
+
+############
+# use pcr.seqs to trim the reference alignment to the region of the gene that they actually sequenced.
+# Customize your reference alignment for your favorite region
+# https://mothur.org/blog/2016/Customization-for-your-region/
+#
+# pcr.seqs(fasta=$alignref_sep_bac, start=$pcr_seq_start, end=$pcr_seq_end, keepdots=F)
+# 
+# rename.file(input=silva.bacteria.pcr.fasta, new=silva.pcr-trimmed.fasta)
+# since output_dir set already, then mothur will find the file to rename without path
+# rename.file(input=silva.bacteria.pcr.fasta, new=silva.v4.fasta)
+
+summary.seqs(fasta=silva.pcr-trimmed.fasta)
+
+align.seqs(fasta=current, reference=silva.pcr-trimmed.fasta)
+
+summary.seqs(fasta=current, count=current)
+
+# start and end positoins are from the revious summary.seqs
+screen.seqs(fasta=current, count=current, start=$screen_seq_02_start, end=$screen_seq_02_end)
+
+summary.seqs(fasta=current, count=current)
+
+filter.seqs(fasta=current, vertical=T, trump=.)
+
+unique.seqs(fasta=current, count=current)
+
+pre.cluster(fasta=current, count=current, diffs=$preCdiff)
+
+chimera.vsearch(fasta=current, count=current, dereplicate=t)
+
+summary.seqs(fasta=current, count=current)
+
+
+# train set
+# /home/gyula/bfx_sources/RefSeqs/Amplicon/MOTHUR/trainset9_032012.pds.fasta
+# /home/gyula/bfx_sources/RefSeqs/Amplicon/MOTHUR/trainset9_032012.pds.tax
+# classify.seqs(fasta=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.fasta, count=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.count_table, reference=/home/gyula/bfx_sources/RefSeqs/Amplicon/MOTHUR/trainset9_032012.pds.fasta, taxonomy=/home/gyula/bfx_sources/RefSeqs/Amplicon/MOTHUR/trainset9_032012.pds.tax)
+classify.seqs(fasta=current, count=current, reference=$trainset19_072023.pds.fasta, taxonomy=$trainset19_072023.pds.tax)
+# output
+# MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pds.wang.tax.summary
+# MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pds.wang.
+remove.lineage(fasta=current, count=current, taxonomy=current, taxon=$contaminants)
+
+# seq.error available ony if control fasta afailable
+# mock reference fasta
+# /home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/HMP_MOCK.v35.fasta
+# get.groups(count=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, fasta=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.fasta, groups=Mock)
+# seq.error(fasta=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.fasta, count=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, reference=/home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/HMP_MOCK.v35.fasta, aligned=F)
+
+count.groups(count=current)
+
+dist.seqs(fasta=current, cutoff=0.03)
+
+cluster(column=current, count=current)
+
+make.shared(list=current, count=current, label=0.03)
+
+rarefaction.single(shared=current)
+quit()
+
+# No MOCK in prohect samples
+# remove.groups(count=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, fasta=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.fasta, taxonomy=MATE_MothurBatchProject.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pds.wang.pick.taxonomy, groups=Mock)
+
+# copy fies before rename
+system(cp /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/current)
+system(cp /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/current)
+system(cp /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/current)
+
+rename.file(fasta=/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/current, count=/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/current, taxonomy=/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/current, prefix=final)
+
+# OTU Now we have a couple of options for clustering sequences into OTUs. For a small dataset like this, we can do the traditional approach using dist.seqs and cluster:
+dist.seqs(fasta=final.fasta, cutoff=0.03)
+cluster(column=final.dist, count=final.count_table)
+
+# Next we want to know how many sequences are in each OTU from each group and we can do this using the make.shared command. Here we tell mothur that we’re really only interested in the 0.03 cutoff level:
+make.shared(list=final.opti_mcc.list, count=final.count_table, label=0.03)
+
+# We probably also want to know the taxonomy for each of our OTUs. We can get the consensus taxonomy for each OTU using the classify.otu command:
+classify.otu(list=final.opti_mcc.list, count=final.count_table, taxonomy=final.taxonomy, label=0.03)
+
+# The method built into mothur for identifying ASVs is pre.cluster. We did this above and then removed chimeras and contaminant sequences. We can convert the fasta and count_table files we used to form OTUs to a shared file using the make.shared command.
+make.shared(count=final.count_table)
+
+# This results in a shared and list file. The shared file we can use like the shared file from forming OTUs or phylotypes. The list file we can use to generate a consensus taxonomy for each ASV.
+classify.otu(list=final.asv.list, count=final.count_table, taxonomy=final.taxonomy, label=ASV)
+
+# For some analyses you may desire to bin your sequences in to phylotypes according to their taxonomic classification. We can do this using the phylotype command:
+phylotype(taxonomy=final.taxonomy)
+
+# The cutoff numbering is a bit different for phylotype compared to cluster/cluster.split. Here you see 1 through 6 listed; these correspond to Genus through Kingdom levels, respectively. So if you want the genus-level shared file we’ll do the following:
+make.shared(list=final.tx.list, count=final.count_table, label=1)
+
+# We also want to know who these OTUs are and can run classify.otu on our phylotypes:
+classify.otu(list=final.tx.list, count=final.count_table, taxonomy=final.taxonomy, label=1)
+
+# If you are interested in using methods that depend on a phylogenetic tree such as calculating phylogenetic diversity or the unifrac commands, you’ll need to generate a tree. This process gets mess as your number of sequences increases. But here’s how we’d do it using dist.seqs and clearcut...
+dist.seqs(fasta=final.fasta, output=lt)
+# Output File Names:
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.phylip.dis
+clearcut(phylip=final.phylip.dist)
+# Output File Names:
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.phylip.tre
+
+
+#########xx
+# Analysis
+# 
+#
+#
+# We now want to do is see how many sequences we have in each sample. We’ll do this with the count.groups command:
+#
+count.groups(shared=final.opti_mcc.shared)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.count.summary
+#
+# We see that our smallest sample had 2403 sequences in it. That is a reasonable number. Despite what some say, subsampling and rarefying your data is an important thing to do. We’ll generate a subsampled file for our analyses with the sub.sample command:
+#
+# sub.sample(shared=final.opti_mcc.shared, size=2403)
+#
+# subsampling will take the smallest sample count if size is not povided
+
+sub.sample(shared=final.opti_mcc.shared)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.0.03.subsample.shared
+
+#################
+# OTU-based analysis
+
+# Alpha diversity
+
+# Let’s start our analysis by analyzing the alpha diversity of the samples. First we will generate rarefaction curves describing the number of OTUs observed as a function of sampling effort. We’ll do this with the rarefaction.single command:
+
+rarefaction.single(shared=final.opti_mcc.shared, calc=sobs, freq=100)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.groups.rarefaction
+
+#  Finally, let’s get a table containing the number of sequences, the sample coverage, the number of observed OTUs, and the Inverse Simpson diversity estimate using the summary.single command. To standardize everything, let’s randomly select 2403 sequences from each sample 1000 times and calculate the average (note: that if we set subsample=T, then it would use the size of the smallest library):
+#
+summary.single(shared=final.opti_mcc.shared, calc=nseqs-coverage-sobs-invsimpson, subsample=T)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.groups.ave-std.summary
+
+# Beta diversity measurements
+#
+
+
+# Now we’d like to compare the membership and structure of the various samples using an OTU-based approach. Let’s start by calculating the similarity of the membership and structure found in the various samples. We’ll do this with the dist.shared command that will allow us to rarefy our data to a common number of sequences.
+#
+dist.shared(shared=final.opti_mcc.shared, calc=braycurtis-jclass, subsample=T)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.dist
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.std.dist
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.jclass.0.03.lt.ave.dist
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.jclass.0.03.lt.std.dist
+
+#
+# These two distance matrices (i.e. final.opti_mcc.jclass.0.03.lt.ave.dist and final.opti_mcc.braycurtis.0.03.lt.ave.dist) can then be visualized using the pcoa or nmds plots. Principal Coordinates (PCoA) uses an eigenvector-based approach to represent multidimensional data in as few dimesnsions as possible. Our data is highly dimensional (~9 dimensions).
+#
+pcoa(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist)
+#Output File Names: 
+#/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes
+#/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings
+
+# Alternatively, non-metric multidimensional scaling (NMDS) tries to preserve the distance between samples using a user-defined number of dimensions. We can run our data through NMDS with 2 dimensions with the following commands
+#
+nmds(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.nmds.iters
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes
+
+#
+# Opening the final.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress file we can inspect the stress and R\^2 values, which describe the quality of the ordination. Each line in this file represents a different iteration and the configuration obtained in the iteration with the lowest stress is reported in the final.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes file. In this file we find that the lowest stress value was 0.19 with an R-squared value of 0.89; that stress level is a little higher than we’d like. You can test what hapens with three dimensions by the following:
+#
+nmds(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist, mindim=3, maxdim=3)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.nmds.iters
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MATE/res_out/final.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes
+
+#
+
+quit()
+
+################xx
+# Analysis with METADATA
+
+# We can test to determine whether the clustering within the ordinations is statistically significant or not using by using the amova command. To run amova, we will first need to create a design file that indicates which treatment each sample belongs to. There is a file called mouse.time.design in the folder you downloaded that looks vaguely like this:
+
+# Metadata
+# /home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/mouse.time.design
+amova(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist, design=/home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/mouse.time.design)
+
+# Here we see from the AMOVA that the “cloud” early and late time points has a significantly different centroid for this mouse. Thus, the observed separation in early and late samples is statistically significant. We can also see whether the variation in the early samples is significantly different from the variation in the late samples using the homova command:
+#
+homova(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist, design=/home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/imouse.time.design)
+
+# Next, we might ask which OTUs are responsible for shifting the samples along the two axes. We can determine this by measuring the correlation of the relative abundance of each OTU with the two axes in the NMDS dataset. We do this with the corr.axes command:
+#
+corr.axes(axes=final.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes, shared=final.opti_mcc.0.03.subsample.shared, method=spearman, numaxes=3)
+#
+#Output File Names: 
+#/home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.opti_mcc.0.03.subsample.spearman.corr.axes
+
+
+
+# /home/gyule/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/mouse.dpw.metadata
+# We can then run corr.axes again with the metadata option:
+#
+corr.axes(axes=final.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes, metadata=/home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/mouse.dpw.metadata, method=spearman, numaxes=3)
+#
+
+
+
+# Another tool we can use is get.communitytype to see whether our data can be partitioned in to separate community types
+#
+get.communitytype(shared=final.opti_mcc.0.03.subsample.shared)
+
+
+
+####################
+# Population-level analysis
+
+# In addition to the use of corr.axes and get.communitytype we have several tools to differentiate between different groupings of samples. The first we’ll demonstrate is metastats, which is a non-parametric T-tetst that determines whether there are any OTUs that are differentially represented between the samples from men and women in this study. Run the following in mothur:
+
+metastats(shared=final.opti_mcc.0.03.subsample.shared, design=/home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/mouse.time.design)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.opti_mcc.0.03.subsample.0.03.Late_Early.metastats
+
+# Another non-parametric tool we can use as an alternative to metastats is lefse:
+#
+lefse(shared=final.opti_mcc.0.03.subsample.shared, design=/home/gyula/bfx_sources/Example_dataset/16S_V4_DADA2_Pipeline_Tutorial_ILMN/MiSeq_SOP/mouse.time.design)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.opti_mcc.0.03.subsample.0.03.lefse_summary
+#
+
+
+#########################
+# Phylogeny-based analysis
+
+#OTU and phylotype-based analyses are taxonomic approaches that depend on a binning procedure. In contrast, phylogeny-based approaches attempt similar types of analyses using a phylogenetic tree as input instead of a shared file. Because of this difference these methods compare the genetic diversity of different communities.
+
+# Alpha diversity
+
+# When using phylogenetic methods, alpha diversity is calculated as the total of the unique branch length in the tree. This is done using the phylo.diversity command. Because of differences in sampling depth we will rarefy the output:
+
+phylo.diversity(tree=final.phylip.tre, count=final.count_table, rarefy=T)
+
+# This will generate a file ending in rarefaction.
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.1.phylodiv.summary
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.1.phylodiv.rarefaction
+
+
+# Beta diversity
+
+# The unifrac-based metrics are used to assess the similarity between two communities membership (unifrac.unweighted) and structure (unifrac.weighted). We will use these metrics and generate PCoA plots to compare our samples. There are two beta-diversity metrics that one can use - unweighted and weighted. We will also have mothur subsample the trees 1000 times and report the average:
+
+unifrac.unweighted(tree=final.phylip.tre, count=final.count_table, distance=lt,random=F, subsample=t)
+# Output File Names: 
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.uwsummary
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.1.unweighted.ave.dist
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.1.unweighted.std.dist
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.tre1.unweighted.phylip.dist
+#
+unifrac.weighted(tree=final.phylip.tre, count=final.count_table, distance=lt, random=F, subsample=t)
+# Output File Names:
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.tre1.weighted.phylip.dist
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.tre1.wsummary
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.tre1.weighted.ave.dist
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.phylip.tre1.weighted.std.dist
+
+
+
+############x
+# Few charts
+# https://github.com/SmithsonianWorkshops/metabarcoding/blob/master/mothur_Monday_afternoon/mothur_tutorial.md
+#
+
+venn(shared=final.opti_mcc.0.03.subsample.shared, groups=F3D0-F3D1-F3D2-F3D3)
+# Output File Names:
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.opti_mcc.0.03.subsample.0.03.sharedsobs.F3D0-F3D1-F3D2-F3D3.svg
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.opti_mcc.0.03.subsample.0.03.sharedsobs.F3D0-F3D1-F3D2-F3D3.sharedotus
+#
+
+heatmap.bin(shared=final.opti_mcc.0.03.subsample.shared, scale=log2, numotu=50)
+# Output File Names:
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.opti_mcc.0.03.subsample.0.03.heatmap.bin.svg
+#
+
+
+heatmap.sim(phylip=final.opti_mcc.jclass.0.03.lt.ave.dist)
+# Output File Names:
+# /home/gyula/bfx_sources/tmp/MOTHUT_dev/pipeline_MiSeq_SOP/res_out/final.opti_mcc.jclass.0.03.lt.ave.heatmap.sim.svg
+
+
+
+
+
+
+
+quit()
+
+make.file(inputdir=../Csirke_Mark_2025_02_11, prefix= Chick, type fastq)
+make.contigs(file=Chick.files, processors=25, deltaq=10)
+summary.seqs(fasta=Chick.trim.contigs.fasta, count=Chick.contigs.count_table)
+screen.seqs(fasta=Chick.trim.contigs.fasta, count=Chick.contigs.count_table, maxambig=8, minlength=400, maxlength=500, maxhomop=7)
+get.current()
+summary.seqs(fasta=Chick.trim.contigs.good.fasta, count=Chick.contigs.good.count_table)
+unique.seqs(fasta=Chick.trim.contigs.good.fasta, count=Chick.contigs.good.count_table)
+summary.seqs(fasta=Chick.trim.contigs.good.fasta, count=Chick.contigs.good.count_table)
+count.groups(count=current)
+screen.seqs(fasta=Chick.trim.contigs.good.unique.fasta, count=Chick.trim.contigs.good.count_table, maxambig=0)
+count.groups(count=current)
+sub.sample(fasta=Chick.trim.contigs.good.unique.good.fasta, count=Chick.trim.contigs.good.good.count_table, size=45000, persample=T)
+count.groups(count=current)
+align.seqs(fasta=current, reference=silva.nr_v138_1.align)
+summary.seqs(fasta=Chick.trim.contigs.good.unique.good.subsample.align, count=Chick.trim.contigs.good.good.subsample.count_table)
+screen.seqs(fasta=current, count=current, start=11895, end=25316)
+summary.seqs(fasta=current, count=current)
+filter.seqs(fasta=current, trump=.)
+summary.seqs(fasta=current, count=current)
+unique.seqs(fasta=current, count=current)
+pre.cluster(fasta=current, count=current, diffs=4)
+summary.seqs(fasta=current, count=current)
+chimera.uchime(fasta=current, count=current, dereplicate=T)
+split.abund(cutoff=1, fasta=current, count=current)
+classify.seqs(fasta=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.fasta, count=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.count_table, method=wang, reference=silva.nr_v138_1.align, taxonomy=silva.nr_v138_1.tax, cutoff=80)
+summary.seqs(fasta=current, count=current)
+remove.lineage(fasta=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.fasta, count=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.count_table, taxonomy=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.nr_v138_1.wang.taxonomy, taxon=Archaea-Chloroplast-Mitochondria-Eukaryota-unknown)
+summary.tax(taxonomy=current, count=current)
+dist.seqs(fasta=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.pick.fasta, cutoff=0.15)
+cluster(column=current, count=current, cutoff=0.15, method=average)
+make.shared(list=current, label=0.03, count=current)
+count.groups(shared=current)
+classify.otu(list=current, taxonomy=current, label=0.03, count=current, basis=sequence, relabund=T)
+get.oturep(list=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.pick.an.list, fasta=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.pick.fasta, count=Chick.trim.contigs.good.unique.good.subsample.good.filter.unique.precluster.denovo.uchime.abund.pick.count_table, method=abundance, cutoff=0.03)
+degap.seqs(fasta=current)
+summary.single(shared=current, subsample=T, calc=nseqs-coverage-sobs-chao-ace-shannon-invsimpson)
+sub.sample(shared=current)
+rarefaction.single(shared=current, calc=sobs, freq=100)
+
