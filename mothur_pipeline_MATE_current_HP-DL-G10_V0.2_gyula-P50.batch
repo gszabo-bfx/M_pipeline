@@ -139,6 +139,10 @@ classify.otu(list=current, taxonomy=current, label=0.03, count=current, basis=se
 system(cp res_out/*.an.0.03.cons.tax.summary res_out/${PWD##*/}_taxonomy_table.summary)
 system(cp res_out/*.an.0.03.cons.taxonomy res_out/${PWD##*/}_taxonomy_list.taxonomy)
 
+# create krona chart
+system(python ./mothur_krona_XML_gy.py res_out/${PWD##*/}_taxonomy_table.summary > res_out/${PWD##*/}_taxonomy_table.summary.xml)
+system(ktImportXML -o res_out/${PWD##*/}_taxonomy_table.summary.html res_out/${PWD##*/}_taxonomy_table.summary.xml)
+
 # PAR
 # get_oturep_cutoff
 # get_oturep_method

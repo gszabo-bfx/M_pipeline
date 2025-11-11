@@ -5,10 +5,15 @@
 mkdir ${1}fq_in
 mkdir ${1}cut_out
 
-find $1 -name "*.fastq.gz" -exec cp {} ${1}fq_in \;
-find $1 -name "*.fq.gz" -exec cp {} ${1}fq_in \;
-find $1 -name "*.fastq" -exec cp {} ${1}fq_in \;
-find $1 -name "*.fq" -exec cp {} ${1}fq_in \;
+# -path "./fq_in" -prune -o -> exclude "./fq_in" and continue others
+find $1 -path "./fq_in" -prune -o -name "*.fastq.gz" -print -exec cp {} ${1}fq_in \;
+find $1 -path "./fq_in" -prune -o -name "*.fastq.gz" -print -exec rm {} ${1}fq_in \;
+find $1 -path "./fq_in" -prune -o -name "*.fq.gz" -print -exec cp {} ${1}fq_in \;
+find $1 -path "./fq_in" -prune -o -name "*.fq.gz" -print -exec rm {} ${1}fq_in \;
+find $1 -path "./fq_in" -prune -o -name "*.fastq" -print -exec cp {} ${1}fq_in \;
+find $1 -path "./fq_in" -prune -o -name "*.fastq" -print -exec rm {} ${1}fq_in \;
+find $1 -path "./fq_in" -prune -o -name "*.fq" -print -exec cp {} ${1}fq_in \;
+find $1 -path "./fq_in" -prune -o -name "*.fq" -print -exec rm {} ${1}fq_in \;
 
 for i in ${1}fq_in/*R1_001.fastq.gz
 do
@@ -28,4 +33,5 @@ cutadapt \
 	${1}fq_in/$R2_base
 done
 
-gunzip ${1}cut_out/*
+gzip ${1}fq_in/*.fastq
+gzip ${1}fq_in/*.fq

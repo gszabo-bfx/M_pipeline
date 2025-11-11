@@ -6,7 +6,7 @@ Script files in this package:
 cutadapt_script* : scrips to trim target specific primer sequences from raw Illumina PE reads
 mothur_init* : MOTHUR batch scripts to initiate MOTHUR pipeline with target specific parameters
 mothur_pipeline* : main MOTHUR pipeline batch script with MOTHUR workflow commands
-
+mothur_krona_XML_gy.py : python script to convert tax.summary.table to xml format can be used to generate krona diagram
 
 ## Recent MOTHUR workflow control files can be found in 
 /mnt/00F68F456EE8961F/BioInfo/09_Softwares/MOTHUR_control/00_Recent
@@ -21,6 +21,7 @@ mothur_pipeline* : main MOTHUR pipeline batch script with MOTHUR workflow comman
 		cutadapt_script
 		mothur_init
 		mothur_pipeline
+		mothur_krona_XML_gy.py
 			files into your project folder
 - Run cutadapt scrtipt
 	$ cutadapt_script_ILMN_16SV3V4_V02.sh ./
@@ -29,6 +30,7 @@ mothur_pipeline* : main MOTHUR pipeline batch script with MOTHUR workflow comman
 	 	- move all *fastq.gz files into fq_in folder
 		- run cutadapt that outputs trimmed reads into cut_out folder
 - Check MOTHUR pipeline parameters in the mothur_init file, set parameters if necessary. Start mothur and run script
+	(activate conda environment with mothur installed, if necessary)
 	$ mothur
 	> mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2.batch
 		The script will help mothur to import the parameters and

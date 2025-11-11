@@ -35,7 +35,7 @@ set.logfile(name=$log_out/$log_name)
 proc=8
 
 #set type of data fastq or gz
-fqtype=fastq
+fqtype=gz
 # make.contigs
 make_contigs_deltaq=10
 # screen.seq 01 after make.contigs
@@ -105,7 +105,9 @@ reference_dir=/mnt/00F68F456EE8961F/BioInfo/00_References/Metagenom/Amplicon/MOT
 #alignref=/mnt/00F68F456EE8961F/BioInfo/00_References/Metagenom/Amplicon/MOTHUR/Full/V138.2/silva.nr_v138_2.align
 #taxonref=/mnt/00F68F456EE8961F/BioInfo/00_References/Metagenom/Amplicon/MOTHUR/Full/V138.2/silva.nr_v138_2.tax
 alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.align
+#alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.align
 taxonref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.tax
+#taxonref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.tax
 
 
 
