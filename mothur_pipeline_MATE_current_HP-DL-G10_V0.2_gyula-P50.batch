@@ -32,6 +32,8 @@ summary.seqs(count=current)
 
 system(echo "summary.seqs after unique.seqs")
 
+count.groups(count=current)
+
 # is it neccessary?
 # count.groups(count=current)
 # redundant removed
@@ -42,8 +44,6 @@ system(echo "summary.seqs after unique.seqs")
 
 # redundant removed
 # system(echo "summary.seqs after screen.seqs maxamb=0")
-
-count.groups(count=current)
 
 sub.sample(fasta=current, count=current, persample=T)
 
