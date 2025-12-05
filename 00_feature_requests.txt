@@ -1,0 +1,14 @@
+# Control
+	- fq handling befor cutadapt
+		- in-line-R1tag-for-fq-rearrange
+
+# Init
+
+# Pipeline
+
+
+
+
+###########
+
+#C-001-in-line-R1tag-for-fq-rearrange
