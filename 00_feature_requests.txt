@@ -11,4 +11,5 @@
 
 ###########
 
-#C-001-in-line-R1tag-for-fq-rearrange
+C-001-in-line-R1tag-for-fq-rearrange	fq rearrangement according to in-lin variable $R1tag
+C-002-in-line-R1tag-for-cutadapt
