@@ -32,7 +32,7 @@ set.logfile(name=$log_out/$log_name)
 # Variables for MOTHUR functions
 
 #set number of processors to use during analysis
-proc=8
+proc=6
 
 #set type of data fastq or gz
 fqtype=gz

@@ -5,14 +5,15 @@
 
 
 system(echo "New analysis started  at $(date)")
-system(rm $proj_wdres_out/*)
+system(rm $proj_wd/res_out/*)
 
+# quit
 
-make.file(inputdir=$fq_in, outputdir=$proj_wdres_out, type=$fqtype, prefix=$proj_name)
+make.file(inputdir=$fq_in, outputdir=$proj_wd/res_out, type=$fqtype, prefix=$proj_name)
 # PAR deltaq=10
-make.contigs(outputdir=$proj_wdres_out, inputdir=$fq_in, file=current, processors=$proc, deltaq=$make_contigs_deltaq)
+make.contigs(outputdir=$proj_wd/res_out, inputdir=$fq_in, file=current, processors=$proc, deltaq=$make_contigs_deltaq)
 
-set.dir(input=$proj_wdres_out, output=$proj_wdres_out)
+set.dir(input=$proj_wd/res_out, output=$proj_wd/res_out)
 
 summary.seqs(fasta=current, count=current)
 
@@ -32,6 +33,10 @@ summary.seqs(count=current)
 
 system(echo "summary.seqs after unique.seqs")
 
+count.groups(count=current)
+
+system(echo "count.groups after summary.seqs")
+
 # is it neccessary?
 # count.groups(count=current)
 # redundant removed
@@ -43,14 +48,10 @@ system(echo "summary.seqs after unique.seqs")
 # redundant removed
 # system(echo "summary.seqs after screen.seqs maxamb=0")
 
-count.groups(count=current)
-
-sub.sample(fasta=current, count=current, persample=T)
-
-# necessary??
-count.groups(count=current)
-
-system(echo "count.groups after sub.sample")
+# sub.sample(fasta=current, count=current, persample=T)
+# # necessary??
+# count.groups(count=current)
+# system(echo "count.groups after sub.sample")
 
 align.seqs(fasta=current, reference=$alignref)
 

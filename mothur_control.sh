@@ -93,7 +93,6 @@ case $assay in
     ;;
 esac
 
-
 #################
 # cutadapt
 for i in ${path}/fq_in/*_R1_001.fastq.gz
