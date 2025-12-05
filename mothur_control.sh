@@ -104,8 +104,10 @@ esac
 # cutadapt
 for i in ${path}/fq_in/*${R1tag}
 do
-	R1_base=$(basename "$i")
-	R2_base="$(sed "s/R1/R2/g" <<< $R1_base)"
+	sample_name=$(basename -s $R1tag $i)
+	R1_name="${sample_name}${R1tag}"
+	R2_name="${sample_name}${R1tag/1/2}"
+	# R2_base="$(sed "s/R1/R2/g" <<< $R1_base)"
 
 cutadapt \
 	-g $R1_FW -a $R1_RV \
@@ -114,10 +116,10 @@ cutadapt \
 	--discard-untrimmed \
 	--max-n 0 \
 	--minimum-length 0 \
-	-o ${path}/cut_out/$R1_base \
-	-p ${path}/cut_out/$R2_base \
-	${path}/fq_in/$R1_base \
-	${path}/fq_in/$R2_base \
+	-o ${path}/cut_out/$R1_name \
+	-p ${path}/cut_out/$R2_name \
+	${path}/fq_in/$R1_name \
+	${path}/fq_in/$R2_name \
 	 | tee ${path}/log_out/cutadapt_stdout.txt
 done
 
