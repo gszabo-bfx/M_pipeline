@@ -1,6 +1,8 @@
 # Control
 	- fq handling befor cutadapt
 		- in-line-R1tag-for-fq-rearrange
+		- in-line-R1tag-for-cutadapt
+	- call mothur match file from control.sh
 
 # Init
 
@@ -13,3 +15,4 @@
 
 C-001-in-line-R1tag-for-fq-rearrange	fq rearrangement according to in-lin variable $R1tag
 C-002-in-line-R1tag-for-cutadapt	cutadapt works with $R1tag
+C-003-call-mothur-match-file-from-control.sh
