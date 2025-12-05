@@ -15,13 +15,13 @@ do
    case "$opt" in
       p ) path="$OPTARG" ;;
       a ) assay="$OPTARG" ;;
-      n ) parameterC="$OPTARG" ;;
+      n ) R1tag="$OPTARG" ;;
       ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
    esac
 done
 
 # Print helpFunction in case parameters are empty
-if [ -z "$path" ] || [ -z "$assay" ] #|| [ -z "$parameterC" ]
+if [ -z "$path" ] || [ -z "$assay" ] || [ -z "$R1tag" ]
 then
    echo "Some or all of the parameters are empty";
    helpFunction
@@ -31,10 +31,11 @@ fi
 
 ################
 # Begin script in case all parameters are correct
-#echo "$parameterA"
-#echo "$parameterB"
-#echo "$parameterC"
+echo "path $path"
+echo "assay $assay"
+echo "R1tag $R1tag"
 
+# exit
 
 #################
 # prep project folder
@@ -55,14 +56,20 @@ fi
 
 
 # -path "./fq_in" -prune -o -> exclude "./fq_in" and continue others
-find ${path} -path "./fq_in" -prune -o -name "*.fastq.gz" -print -exec cp {} ${path}/fq_in \;
-find ${path} -path "./fq_in" -prune -o -name "*.fastq.gz" -print -exec rm {} ${path}/fq_in \;
-find ${path} -path "./fq_in" -prune -o -name "*.fq.gz" -print -exec cp {} ${path}/fq_in \;
-find ${path} -path "./fq_in" -prune -o -name "*.fq.gz" -print -exec rm {} ${path}/fq_in \;
-find ${path} -path "./fq_in" -prune -o -name "*.fastq" -print -exec cp {} ${path}/fq_in \;
-find ${path} -path "./fq_in" -prune -o -name "*.fastq" -print -exec rm {} ${path}/fq_in \;
-find ${path} -path "./fq_in" -prune -o -name "*.fq" -print -exec cp {} ${path}/fq_in \;
-find ${path} -path "./fq_in" -prune -o -name "*.fq" -print -exec rm {} ${path}/fq_in \;
+#find ${path} -path "./fq_in" -prune -o -name "*.fastq.gz" -print -exec cp {} ${path}/fq_in \;
+#find ${path} -path "./fq_in" -prune -o -name "*.fastq.gz" -print -exec rm {} ${path}/fq_in \;
+#find ${path} -path "./fq_in" -prune -o -name "*.fq.gz" -print -exec cp {} ${path}/fq_in \;
+#find ${path} -path "./fq_in" -prune -o -name "*.fq.gz" -print -exec rm {} ${path}/fq_in \;
+#find ${path} -path "./fq_in" -prune -o -name "*.fastq" -print -exec cp {} ${path}/fq_in \;
+#find ${path} -path "./fq_in" -prune -o -name "*.fastq" -print -exec rm {} ${path}/fq_in \;
+#find ${path} -path "./fq_in" -prune -o -name "*.fq" -print -exec cp {} ${path}/fq_in \;
+#find ${path} -path "./fq_in" -prune -o -name "*.fq" -print -exec rm {} ${path}/fq_in \;
+find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag}" -print -exec cp {} ${path}/fq_in \;
+find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec cp {} ${path}/fq_in \;
+find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag}" -print -exec rm {} \;
+find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec rm {} \;
+
+# exit
 
 #################
 # select assay
@@ -95,7 +102,7 @@ esac
 
 #################
 # cutadapt
-for i in ${path}/fq_in/*_R1_001.fastq.gz
+for i in ${path}/fq_in/*${R1tag}
 do
 	R1_base=$(basename "$i")
 	R2_base="$(sed "s/R1/R2/g" <<< $R1_base)"
