@@ -100,6 +100,8 @@ case $assay in
     ;;
 esac
 
+
+
 #################
 # cutadapt
 for i in ${path}/fq_in/*${R1tag}
@@ -129,8 +131,17 @@ gzip ${path}/fq_in/*.fq
 
 ###########
 # create a temp copy of batch script file to set parameters
+cp ./mothur_one.batch ./mothur_one.batch.local
 
-cp ./mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2_gyula-P50.batch ./mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2_gyula-P50.batch.local
+
+#################
+# insert insline parameters into mothur match file
+#
+# Environment variable substitution in sed
+# https://stackoverflow.com/questions/584894/environment-variable-substitution-in-sed
+sed  -i 's@proj_wd=.*@proj_wd='"$path"'@g' ./mothur_one.batch.local 
+
+#exit 
 
 ###########
 # call mothur batch script
@@ -140,6 +151,8 @@ eval "$(conda shell.bash hook)"
 conda activate MOTHUR
 echo "$CONDA_PREFIX conda environment activated"
 
-mothur ./mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2_gyula-P50.batch.local
+path=$path
 
-rm ./mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2_gyula-P50.batch.local
+mothur ./mothur_one.batch.local
+
+#rm ./mothur_one.batch.local
