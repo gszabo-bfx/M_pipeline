@@ -125,3 +125,21 @@ done
 
 gzip ${path}/fq_in/*.fastq
 gzip ${path}/fq_in/*.fq
+
+
+###########
+# create a temp copy of batch script file to set parameters
+
+cp ./mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2_gyula-P50.batch ./mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2_gyula-P50.batch.local
+
+###########
+# call mothur batch script
+#
+
+eval "$(conda shell.bash hook)"
+conda activate MOTHUR
+echo "$CONDA_PREFIX conda environment activated"
+
+mothur ./mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2_gyula-P50.batch.local
+
+rm ./mothur_init_MATE_16SV3V4_HP-DL-G10_V0.2_gyula-P50.batch.local
