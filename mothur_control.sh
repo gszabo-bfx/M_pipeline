@@ -3,25 +3,29 @@
 helpFunction()
 {
    echo ""
-   echo "Usage: $0 -p path -a assay -n R1_name_pattern"
+   echo "Usage: $0 -p path -t threads -a assay -n R1_name_pattern"
    echo -e "\t-p path : path/to/project/folder"
-   echo -e "\t-a assay : amplicon target assay eg [ILMNV3V4] or [PATE]"
+   echo -e "\t-t threads : number of threads"
+   echo -e "\t-a assay : amplicon target assay can be used: [ILMNV3V4] [PATE]"
    echo -e "\t-n R1_name_pattern : pattern to recognise R1 read eg [_R1_001.fastq.gz] or [_1.fq.gz]"
+   echo -e "\t-f fqtype: in put fastq file type [fastq] or [gz]"
    exit 1 # Exit script after printing help
 }
 
-while getopts "p:a:n:" opt
+while getopts "p:t:a:n:f:" opt
 do
    case "$opt" in
       p ) path="$OPTARG" ;;
+      t ) threads="$OPTARG" ;;
       a ) assay="$OPTARG" ;;
       n ) R1tag="$OPTARG" ;;
+      f ) fqtype="$OPTARG" ;;
       ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
    esac
 done
 
 # Print helpFunction in case parameters are empty
-if [ -z "$path" ] || [ -z "$assay" ] || [ -z "$R1tag" ]
+if [ -z "$path" ] || [ -z "$threads" ] || [ -z "$assay" ] || [ -z "$R1tag" ] || [ -z "$fqtype" ]
 then
    echo "Some or all of the parameters are empty";
    helpFunction
@@ -62,8 +66,26 @@ find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec 
 
 # exit
 
+###########
+# create a temp copy of batch script file to set parameters
+cp ./mothur_one.batch ./mothur_one.batch.local
+
 #################
-# select assay
+# insert inline parameters into mothur batch file
+#
+# Environment variable substitution in sed
+# https://stackoverflow.com/questions/584894/environment-variable-substitution-in-sed
+# set path
+sed  -i 's@proj_wd=.*@proj_wd='"$path"'@g' ./mothur_one.batch.local 
+# set threads
+sed  -i 's@proc=.*@proc='"$threads"'@g' ./mothur_one.batch.local 
+# set fqtype
+sed  -i 's@fqtype=.*@fqtype='"$fqtype"'@g' ./mothur_one.batch.local 
+
+#exit 
+
+#################
+# select assay related parameters
 # source https://linuxize.com/post/bash-case-statement/
 case $assay in
 
@@ -72,6 +94,8 @@ case $assay in
     R1_RV="GGATTAGATACCCBDGTAGTC"
     R2_FW="GACTACHVGGGTATCTAATCC"
     R2_RV="CTGCWGCCNCCCGTAGG"
+    sed -i 's@pcr_seq_start=.*@pcr_seq_start=6428@g' ./mothur_one.batch.local
+    sed -i 's@pcr_seq_end=.*@pcr_seq_end=23440@g' ./mothur_one.batch.local
     ;;
 
   PATE)
@@ -79,6 +103,8 @@ case $assay in
     R1_RV="ATTAGADACCYBNKTAGTCY"
     R2_FW="RGACTAMNVRGGTHTCTAAT"
     R2_RV="TBACCGMNVCTKCTGRCAC"
+    sed -i 's@pcr_seq_start=.*@pcr_seq_start=13862@g' ./mothur_one.batch.local
+    sed -i 's@pcr_seq_end=.*@pcr_seq_end=23444@g' ./mothur_one.batch.local
     ;;
 
   #PATTERN_N)
@@ -119,23 +145,6 @@ gzip ${path}/fq_in/*.fastq
 gzip ${path}/fq_in/*.fq
 
 
-###########
-# create a temp copy of batch script file to set parameters
-cp ./mothur_one.batch ./mothur_one.batch.local
-
-
-#################
-# insert inline parameters into mothur batch file
-#
-# Environment variable substitution in sed
-# https://stackoverflow.com/questions/584894/environment-variable-substitution-in-sed
-sed  -i 's@proj_wd=.*@proj_wd='"$path"'@g' ./mothur_one.batch.local 
-
-#exit 
-
-###########
-# call mothur batch script
-#
 
 eval "$(conda shell.bash hook)"
 conda activate MOTHUR

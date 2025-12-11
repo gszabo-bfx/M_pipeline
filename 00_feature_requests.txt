@@ -2,7 +2,8 @@
 	- fq handling befor cutadapt
 		- in-line-R1tag-for-fq-rearrange
 		- in-line-R1tag-for-cutadapt
-	- call mothur match file from control.sh
+	- call mothur batch file from control.sh
+	- get inportant mothur pipeline parameters as mothur_control.sh script inline parameter
 
 # Init
 
@@ -17,3 +18,4 @@ C-001-in-line-R1tag-for-fq-rearrange	fq rearrangement according to in-lin variab
 C-002-in-line-R1tag-for-cutadapt	cutadapt works with $R1tag
 C-003-call-mothur-batch-file-from-control.sh	mothur_control.sh for cutadatpt and inline variables calls mothur_batch file
 C-004-mothur_one.batch	mothur_control.sh for cutadatpt and inline variables calls mothur_one_batch (combined mothur init and mothur pipeline batch files) file
+C-005-thread-and-fqtype-inline	get threads and fqtype from inlie parameter
