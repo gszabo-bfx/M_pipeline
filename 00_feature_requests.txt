@@ -15,4 +15,5 @@
 
 C-001-in-line-R1tag-for-fq-rearrange	fq rearrangement according to in-lin variable $R1tag
 C-002-in-line-R1tag-for-cutadapt	cutadapt works with $R1tag
-C-003-call-mothur-match-file-from-control.sh
+C-003-call-mothur-batch-file-from-control.sh	mothur_control.sh for cutadatpt and inline variables calls mothur_batch file
+C-004-mothur_one.batch	mothur_control.sh for cutadatpt and inline variables calls mothur_one_batch (combined mothur init and mothur pipeline batch files) file

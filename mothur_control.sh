@@ -151,8 +151,19 @@ eval "$(conda shell.bash hook)"
 conda activate MOTHUR
 echo "$CONDA_PREFIX conda environment activated"
 
-path=$path
-
 mothur ./mothur_one.batch.local
-
 #rm ./mothur_one.batch.local
+
+# copy few results file at the end
+cp $path/res_out/*.an.0.03.cons.tax.summary $path/res_out/${path##*/}_taxonomy_table.summary
+cp $path/res_out/*.an.0.03.cons.taxonomy $path/res_out/${path##*/}_taxonomy_list.taxonomy
+cp $path/res_out/*.an.groups.ave-std.summary $path/res_out/${path##*/}_ASV_diversity_data.summary
+cp $path/res_out/*.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV_distribution.shared
+cp $path/res_out/*unique.precluster.denovo.uchime.abund.an.shared $path/res_out/${path##*/}_ASV00_abundance.tsv
+cp $path/res_out/*unique.precluster.denovo.uchime.abund.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV00_abundance_subsampled.tsv
+
+echo "$PWD"
+echo "$path"
+python3 ./mothur_krona_XML_gy.py $path/res_out/${path##*/}_taxonomy_table.summary > $path/res_out/${path##*/}_taxonomy_table.summary.xml
+ktImportXML -o $path/res_out/${path##*/}_taxonomy_table.summary.html $path/res_out/${path##*/}_taxonomy_table.summary.xml
+

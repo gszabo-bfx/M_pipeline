@@ -260,27 +260,30 @@ count.groups(shared=current)
 
 classify.otu(list=current, taxonomy=current, label=0.03, count=current, basis=sequence, relabund=T)
 
-system(cp res_out/*.an.0.03.cons.tax.summary res_out/${path##*/}_taxonomy_table.summary)
-system(cp res_out/*.an.0.03.cons.taxonomy res_out/${path##*/}_taxonomy_list.taxonomy)
+#system(cp res_out/*.an.0.03.cons.tax.summary res_out/${path##*/}_taxonomy_table.summary)
+#system(cp res_out/*.an.0.03.cons.taxonomy res_out/${path##*/}_taxonomy_list.taxonomy)
 
 # create krona chart
-system(python ./mothur_krona_XML_gy.py res_out/${path##*/}_taxonomy_table.summary > res_out/${PWD##*/}_taxonomy_table.summary.xml)
-system(ktImportXML -o res_out/${PWD##*/}_taxonomy_table.summary.html res_out/${path##*/}_taxonomy_table.summary.xml)
+#system(python ./mothur_krona_XML_gy.py res_out/${path##*/}_taxonomy_table.summary > res_out/${PWD##*/}_taxonomy_table.summary.xml)
+#system(ktImportXML -o res_out/${PWD##*/}_taxonomy_table.summary.html res_out/${path##*/}_taxonomy_table.summary.xml)
 
 # PAR
 # get_oturep_cutoff
 # get_oturep_method
 get.oturep(list=current, fasta=current, count=current, method=$get_oturep_method, cutoff=$get_oturep_cutoff)
 
+system(cp res_out/*denovo.uchime.abund.an.unique.rep.fasta res_out/denovo.uchime.abund.an.unique.rep.fasta.orig)
+system(sed -i 's/\tASV/_ASV/g'res_out/*denovo.uchime.abund.an.unique.rep.fasta)
+
 degap.seqs(fasta=current)
 
 summary.single(shared=current, subsample=T, calc=nseqs-coverage-sobs-chao-ace-shannon-invsimpson)
 
-system(cp res_out/*.an.groups.ave-std.summary res_out/${path##*/}_ASV_diversity_data.summary)
+# system(cp res_out/*.an.groups.ave-std.summary res_out/${path##*/}_ASV_diversity_data.summary)
 
 sub.sample(shared=current)
 
-system(cp res_out/*.an.0.03.subsample.shared res_out/${path##*/}_ASV_distribution.shared)
+# system(cp res_out/*.an.0.03.subsample.shared res_out/${path##*/}_ASV_distribution.shared)
 
 # PAR
 # rarefaction_single_calc
