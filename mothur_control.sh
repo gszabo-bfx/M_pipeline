@@ -161,6 +161,7 @@ cp $path/res_out/*.an.groups.ave-std.summary $path/res_out/${path##*/}_ASV_diver
 cp $path/res_out/*.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV_distribution.shared
 cp $path/res_out/*unique.precluster.denovo.uchime.abund.an.shared $path/res_out/${path##*/}_ASV00_abundance.tsv
 cp $path/res_out/*unique.precluster.denovo.uchime.abund.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV00_abundance_subsampled.tsv
+cp $path/res_out/*good.filter.unique.precluster.denovo.uchime.abund.an.unique.rep.ng.fasta $path/res_out/${path##*/}_ASV00_sequences.fasta
 
 echo "$PWD"
 echo "$path"

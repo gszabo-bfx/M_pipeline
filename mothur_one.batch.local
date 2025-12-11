@@ -270,10 +270,10 @@ classify.otu(list=current, taxonomy=current, label=0.03, count=current, basis=se
 # PAR
 # get_oturep_cutoff
 # get_oturep_method
-get.oturep(list=current, fasta=current, count=current, method=$get_oturep_method, cutoff=$get_oturep_cutoff)
+get.oturep(list=current, fasta=current, count=current, method=$get_oturep_method, cutoff=$get_oturep_cutoff, rename=TRUE)
 
-system(cp res_out/*denovo.uchime.abund.an.unique.rep.fasta res_out/denovo.uchime.abund.an.unique.rep.fasta.orig)
-system(sed -i 's/\tASV/_ASV/g'res_out/*denovo.uchime.abund.an.unique.rep.fasta)
+#system(cp res_out/*denovo.uchime.abund.an.unique.rep.fasta res_out/denovo.uchime.abund.an.unique.rep.fasta.orig)
+#system(sed -i 's/\tASV/_ASV/g'res_out/*denovo.uchime.abund.an.unique.rep.fasta)
 
 degap.seqs(fasta=current)
 
