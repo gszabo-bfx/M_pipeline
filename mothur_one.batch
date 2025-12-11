@@ -21,23 +21,22 @@ fq_in=$proj_wd/cut_out
 proj_name=MATE_MothurProject
 
 #logfile name for this analysis
-log_name=MATE_16SV3V4_project
+log_name=MATE_MothurProjectLog.txt
 
 # set logfile location
 set.logfile(name=$log_out/$log_name)
 
-
-# oligos=$proj_wd/oligos.txt
-
+#######################
 # Variables for MOTHUR functions
-
 #set number of processors to use during analysis
 proc=6
 
 #set type of data fastq or gz
 fqtype=gz
+
 # make.contigs
 make_contigs_deltaq=10
+
 # screen.seq 01 after make.contigs
 screen_seq_01_minl=400
 screen_seq_01_maxl=500
@@ -60,8 +59,6 @@ pcr_seq_end=23440
 # pre.cluster diff
 preCdiff=2
 
-# split.abund(cutoff=1 can be set???
-
 # classify_seqs_cutoff
 classify_seqs_cutoff=80
 
@@ -83,19 +80,9 @@ get_oturep_method=abundance
 rarefaction_single_calc=sobs
 rarefaction_single_freq=100
 
-
-# Reference source
-# https://mothur.org/wiki/silva_reference_files/
-
-# Set location of lab reference files
-# REFERENCE_LOCATION=/Users/sarahwestcott/Desktop/release
-reference_dir=/mnt/00F68F456EE8961F/BioInfo/00_References/Metagenom/Amplicon/MOTHUR
-
 ##################
 # MOTHUR REFRENCE FILES
 # https://mothur.org/wiki/silva_reference_files/
-
-
 
 ##################
 # PRIMARY ALIGNMENT 
@@ -110,17 +97,10 @@ alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/s
 taxonref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.tax
 
 
-
-
-
-#run generic Standard Operating Procedure
-# ./mothur_pipeline_MATE_current_HP-DL-G10_V0.2_gyula-P50.batch
-# commands from MOTHUR MiSeq_SOP
-# https://mothur.org/wiki/miseq_sop/
+##################
+# START MOTHUR FUNCTIONS
 #
 #
-
-
 system(echo "New analysis started  at $(date)")
 system(rm $proj_wd/res_out/*)
 
@@ -242,9 +222,6 @@ system(echo "summary.seqs remove.lineage")
 
 summary.tax(taxonomy=current, count=current, output=detail)
 
-
-# summary.tax(taxonomy=current, count=current)
-
 # PAR
 # dist_seqs_cutoff
 dist.seqs(fasta=current, cutoff=$dist_seqs_cutoff)
@@ -260,30 +237,16 @@ count.groups(shared=current)
 
 classify.otu(list=current, taxonomy=current, label=0.03, count=current, basis=sequence, relabund=T)
 
-#system(cp res_out/*.an.0.03.cons.tax.summary res_out/${path##*/}_taxonomy_table.summary)
-#system(cp res_out/*.an.0.03.cons.taxonomy res_out/${path##*/}_taxonomy_list.taxonomy)
-
-# create krona chart
-#system(python ./mothur_krona_XML_gy.py res_out/${path##*/}_taxonomy_table.summary > res_out/${PWD##*/}_taxonomy_table.summary.xml)
-#system(ktImportXML -o res_out/${PWD##*/}_taxonomy_table.summary.html res_out/${path##*/}_taxonomy_table.summary.xml)
-
 # PAR
 # get_oturep_cutoff
 # get_oturep_method
 get.oturep(list=current, fasta=current, count=current, method=$get_oturep_method, cutoff=$get_oturep_cutoff, rename=TRUE)
 
-#system(cp res_out/*denovo.uchime.abund.an.unique.rep.fasta res_out/denovo.uchime.abund.an.unique.rep.fasta.orig)
-#system(sed -i 's/\tASV/_ASV/g'res_out/*denovo.uchime.abund.an.unique.rep.fasta)
-
 degap.seqs(fasta=current)
 
 summary.single(shared=current, subsample=T, calc=nseqs-coverage-sobs-chao-ace-shannon-invsimpson)
 
-# system(cp res_out/*.an.groups.ave-std.summary res_out/${path##*/}_ASV_diversity_data.summary)
-
 sub.sample(shared=current)
-
-# system(cp res_out/*.an.0.03.subsample.shared res_out/${path##*/}_ASV_distribution.shared)
 
 # PAR
 # rarefaction_single_calc

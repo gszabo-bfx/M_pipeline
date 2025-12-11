@@ -31,9 +31,9 @@ fi
 
 ################
 # Begin script in case all parameters are correct
-echo "path $path"
-echo "assay $assay"
-echo "R1tag $R1tag"
+#echo "path $path"
+#echo "assay $assay"
+#echo "R1tag $R1tag"
 
 # exit
 
@@ -54,16 +54,7 @@ then
 	mkdir ${path}/log_out
 fi
 
-
-# -path "./fq_in" -prune -o -> exclude "./fq_in" and continue others
-#find ${path} -path "./fq_in" -prune -o -name "*.fastq.gz" -print -exec cp {} ${path}/fq_in \;
-#find ${path} -path "./fq_in" -prune -o -name "*.fastq.gz" -print -exec rm {} ${path}/fq_in \;
-#find ${path} -path "./fq_in" -prune -o -name "*.fq.gz" -print -exec cp {} ${path}/fq_in \;
-#find ${path} -path "./fq_in" -prune -o -name "*.fq.gz" -print -exec rm {} ${path}/fq_in \;
-#find ${path} -path "./fq_in" -prune -o -name "*.fastq" -print -exec cp {} ${path}/fq_in \;
-#find ${path} -path "./fq_in" -prune -o -name "*.fastq" -print -exec rm {} ${path}/fq_in \;
-#find ${path} -path "./fq_in" -prune -o -name "*.fq" -print -exec cp {} ${path}/fq_in \;
-#find ${path} -path "./fq_in" -prune -o -name "*.fq" -print -exec rm {} ${path}/fq_in \;
+# move all fq file into fq_in
 find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag}" -print -exec cp {} ${path}/fq_in \;
 find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec cp {} ${path}/fq_in \;
 find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag}" -print -exec rm {} \;
@@ -109,7 +100,6 @@ do
 	sample_name=$(basename -s $R1tag $i)
 	R1_name="${sample_name}${R1tag}"
 	R2_name="${sample_name}${R1tag/1/2}"
-	# R2_base="$(sed "s/R1/R2/g" <<< $R1_base)"
 
 cutadapt \
 	-g $R1_FW -a $R1_RV \
@@ -135,7 +125,7 @@ cp ./mothur_one.batch ./mothur_one.batch.local
 
 
 #################
-# insert insline parameters into mothur match file
+# insert inline parameters into mothur batch file
 #
 # Environment variable substitution in sed
 # https://stackoverflow.com/questions/584894/environment-variable-substitution-in-sed
@@ -163,8 +153,7 @@ cp $path/res_out/*unique.precluster.denovo.uchime.abund.an.shared $path/res_out/
 cp $path/res_out/*unique.precluster.denovo.uchime.abund.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV00_abundance_subsampled.tsv
 cp $path/res_out/*good.filter.unique.precluster.denovo.uchime.abund.an.unique.rep.ng.fasta $path/res_out/${path##*/}_ASV00_sequences.fasta
 
-echo "$PWD"
-echo "$path"
+# crate crona chart
 python3 ./mothur_krona_XML_gy.py $path/res_out/${path##*/}_taxonomy_table.summary > $path/res_out/${path##*/}_taxonomy_table.summary.xml
 ktImportXML -o $path/res_out/${path##*/}_taxonomy_table.summary.html $path/res_out/${path##*/}_taxonomy_table.summary.xml
 
