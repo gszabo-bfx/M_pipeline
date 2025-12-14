@@ -31,7 +31,12 @@ then
    helpFunction
 fi
 
-
+########################
+# check for conda and packages
+# # check if conda env available
+# if conda env list | grep ".*MOTHUR.*" >/dev/null 2>&1; then echo "true" ; else echo "false" ; fi
+# check if command executable
+# if command -v cutadapt &>/dev/null && command -v git &>/dev/null ; then echo "true" ; else echo "false" ; fi
 
 ################
 # Begin script in case all parameters are correct
