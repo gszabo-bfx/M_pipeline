@@ -1,5 +1,5 @@
 # Intro
-The scripts in this package is intenned to use for Amplicon Metagenome Analysis with MOTHUR workflow
+The scripts in this package are intenned to use for Amplicon Metagenome Analysis with MOTHUR workflow
 In this workflow one can analyse amplicon metagenomic data from raw Illumina PE reads up to taxa abundance and richness tables
 
 # Requirement
@@ -14,7 +14,6 @@ mothur_krona_XML_gy.py : python script to convert tax.summary.table to xml forma
 https://github.com/gszabo-bfx/M_pipeline.git
 
 # USAGE
-
 - Prepare your folder and input files
 	- create a project folder
 	- copy raw Illumna PE sequencing fastq.gz files into your project folder
