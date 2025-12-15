@@ -1,5 +1,5 @@
 # Intro
-The scripts in this package are intenned to use for Amplicon Metagenome Analysis with MOTHUR workflow
+The scripts in this package are intended to use for Amplicon Metagenome Analysis with MOTHUR workflow
 In this workflow one can analyse amplicon metagenomic data from raw Illumina PE reads up to taxa abundance and richness tables
 
 # Requirement
