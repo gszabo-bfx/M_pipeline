@@ -163,9 +163,9 @@ cp $path/res_out/*.an.0.03.cons.tax.summary $path/res_out/${path##*/}_taxonomy_t
 cp $path/res_out/*.an.0.03.cons.taxonomy $path/res_out/${path##*/}_taxonomy_list.taxonomy
 cp $path/res_out/*.an.groups.ave-std.summary $path/res_out/${path##*/}_ASV_diversity_data.summary
 cp $path/res_out/*.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV_distribution.shared
-cp $path/res_out/*unique.precluster.denovo.uchime.abund.an.shared $path/res_out/${path##*/}_ASV00_abundance.tsv
-cp $path/res_out/*unique.precluster.denovo.uchime.abund.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV00_abundance_subsampled.tsv
-cp $path/res_out/*good.filter.unique.precluster.denovo.uchime.abund.an.unique.rep.ng.fasta $path/res_out/${path##*/}_ASV00_sequences.fasta
+cp $path/res_out/*unique.precluster.denovo.uchime.abund.pick.an.shared $path/res_out/${path##*/}_ASV00_abundance.tsv
+cp $path/res_out/*unique.precluster.denovo.uchime.abund.pick.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV00_abundance_subsampled.tsv
+cp $path/res_out/*good.filter.unique.precluster.denovo.uchime.abund.pick.an.unique.rep.ng.fasta $path/res_out/${path##*/}_ASV00_sequences.fasta
 
 # crate crona chart
 python3 ./mothur_krona_XML_gy.py $path/res_out/${path##*/}_taxonomy_table.summary > $path/res_out/${path##*/}_taxonomy_table.summary.xml

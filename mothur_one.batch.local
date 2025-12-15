@@ -4,7 +4,7 @@
 ##################
 ##### Names and labels
 # MOTHUR Project working folders
-proj_wd=/home/gyula/bfx_control/MOTHUR/07_Test/recent_verion_test
+proj_wd=/home/gyula/bfx_sources/00_G/GAM-251215_MATE-BakaE-MOTHUR-Kecskemet-3-ILMN16S
 
 system(mkdir $proj_wd/res_out)
 out_dir=$proj_wd/res_out
@@ -29,7 +29,7 @@ set.logfile(name=$log_out/$log_name)
 #######################
 # Variables for MOTHUR functions
 #set number of processors to use during analysis
-proc=5
+proc=8
 
 #set type of data fastq or gz
 fqtype=gz
