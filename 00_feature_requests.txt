@@ -19,5 +19,6 @@ C-002-in-line-R1tag-for-cutadapt	cutadapt works with $R1tag
 C-003-call-mothur-batch-file-from-control.sh	mothur_control.sh for cutadatpt and inline variables calls mothur_batch file
 C-004-mothur_one.batch	mothur_control.sh for cutadatpt and inline variables calls mothur_one_batch (combined mothur init and mothur pipeline batch files) file
 C-005-thread-anid-fqtype-inline	get threads and fqtype from inlie parameter
+C-006_pass-threads-to-cutadapt_mothur_one.batch.local-to-gitignore
 
 D-001_finalise-MOTHUR_PIPELINE_README.txt-for-v0.2.0	add notes about requred cutadapt and mothur

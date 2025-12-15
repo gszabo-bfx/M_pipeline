@@ -135,7 +135,7 @@ do
 cutadapt \
 	-g $R1_FW -a $R1_RV \
 	-G $R2_FW -A $R2_RV \
-	--cores=8 \
+	--cores=$threads \
 	--discard-untrimmed \
 	--max-n 0 \
 	--minimum-length 0 \
