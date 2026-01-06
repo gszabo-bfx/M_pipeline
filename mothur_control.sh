@@ -38,6 +38,12 @@ fi
 # check if command executable
 # if command -v cutadapt &>/dev/null && command -v git &>/dev/null ; then echo "true" ; else echo "false" ; fi
 
+#################
+# activate MOTHUR environment
+eval "$(conda shell.bash hook)"
+conda activate MOTHUR
+echo "$CONDA_PREFIX conda environment activated"
+
 ################
 # Begin script in case all parameters are correct
 #echo "path $path"
