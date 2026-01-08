@@ -161,7 +161,7 @@ cutadapt \
 	 | tee -a ${path}/log_out/cutadapt_stdout.txt
 done
 
-exit
+# exit
 
 eval "$(conda shell.bash hook)"
 conda activate MOTHUR
