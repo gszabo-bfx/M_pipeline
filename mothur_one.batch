@@ -91,10 +91,10 @@ rarefaction_single_freq=100
 # REFERENCES USED IN SCRIPT
 #alignref=/mnt/00F68F456EE8961F/BioInfo/00_References/Metagenom/Amplicon/MOTHUR/Full/V138.2/silva.nr_v138_2.align
 #taxonref=/mnt/00F68F456EE8961F/BioInfo/00_References/Metagenom/Amplicon/MOTHUR/Full/V138.2/silva.nr_v138_2.tax
-#alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.align
-alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.align
-#taxonref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.tax
-taxonref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.tax
+alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.align
+#alignref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.align
+taxonref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.nr_v138_2.tax
+#taxonref=/home/gyula/bfx_sources/RefSeqs/Amplicon/Silva/16S/MOTHUR/Full/V138.2/silva.seed_v138_2.tax
 
 
 ##################
