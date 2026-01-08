@@ -75,6 +75,9 @@ find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec 
 find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag}" -print -exec rm {} \;
 find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec rm {} \;
 
+gzip ${path}/fq_in/*.fastq
+gzip ${path}/fq_in/*.fq
+
 # exit
 
 ###########
@@ -132,6 +135,9 @@ esac
 
 #################
 # cutadapt
+
+> ${path}/log_out/cutadapt_stdout.txt
+
 for i in ${path}/fq_in/*${R1tag}
 do
 	sample_name=$(basename -s $R1tag $i)
@@ -149,13 +155,11 @@ cutadapt \
 	-p ${path}/cut_out/$R2_name \
 	${path}/fq_in/$R1_name \
 	${path}/fq_in/$R2_name \
-	 | tee ${path}/log_out/cutadapt_stdout.txt
+	 | tee -a ${path}/log_out/cutadapt_stdout.txt
 done
+	#--max_errors 2 \
 
-gzip ${path}/fq_in/*.fastq
-gzip ${path}/fq_in/*.fq
-
-
+	exit
 
 eval "$(conda shell.bash hook)"
 conda activate MOTHUR
