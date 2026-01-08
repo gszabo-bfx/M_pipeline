@@ -9,10 +9,11 @@ helpFunction()
    echo -e "\t-a assay : amplicon target assay can be used: [ILMNV3V4] [PATE]"
    echo -e "\t-n R1_name_pattern : pattern to recognise R1 read eg [_R1_001.fastq.gz] or [_1.fq.gz]"
    echo -e "\t-f fqtype: in put fastq file type [fastq] or [gz]"
+   echo -e "\t-e error: set from 0-0.9999 (proportional) or 1-n (number of errors)"
    exit 1 # Exit script after printing help
 }
 
-while getopts "p:t:a:n:f:" opt
+while getopts "p:t:a:n:f:e:" opt
 do
    case "$opt" in
       p ) path="$OPTARG" ;;
@@ -20,12 +21,13 @@ do
       a ) assay="$OPTARG" ;;
       n ) R1tag="$OPTARG" ;;
       f ) fqtype="$OPTARG" ;;
+      e ) error="$OPTARG" ;;
       ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
    esac
 done
 
 # Print helpFunction in case parameters are empty
-if [ -z "$path" ] || [ -z "$threads" ] || [ -z "$assay" ] || [ -z "$R1tag" ] || [ -z "$fqtype" ]
+if [ -z "$path" ] || [ -z "$threads" ] || [ -z "$assay" ] || [ -z "$R1tag" ] || [ -z "$fqtype" ] || [ -z "$error" ]
 then
    echo "Some or all of the parameters are empty";
    helpFunction
@@ -151,15 +153,15 @@ cutadapt \
 	--discard-untrimmed \
 	--max-n 0 \
 	--minimum-length 0 \
+	-e $error \
 	-o ${path}/cut_out/$R1_name \
 	-p ${path}/cut_out/$R2_name \
 	${path}/fq_in/$R1_name \
 	${path}/fq_in/$R2_name \
 	 | tee -a ${path}/log_out/cutadapt_stdout.txt
 done
-	#--max_errors 2 \
 
-	exit
+exit
 
 eval "$(conda shell.bash hook)"
 conda activate MOTHUR
