@@ -3,17 +3,18 @@
 helpFunction()
 {
    echo ""
-   echo "Usage: $0 -p path -t threads -a assay -n R1_name_pattern"
+   echo "Usage: $0 -p path -t threads -a assay -n R1_name_pattern -f fqtype -e error -d RefDB"
    echo -e "\t-p path : path/to/project/folder"
    echo -e "\t-t threads : number of threads"
    echo -e "\t-a assay : amplicon target assay can be used: [ILMNV3V4] [PATE]"
    echo -e "\t-n R1_name_pattern : pattern to recognise R1 read eg [_R1_001.fastq.gz] or [_1.fq.gz]"
    echo -e "\t-f fqtype: in put fastq file type [fastq] or [gz]"
-   echo -e "\t-e error: set from 0-0.9999 (proportional) or 1-n (number of errors)"
+   echo -e "\t-e error: set from 0-0.9999 (proportional) or 1-n (number of errors) | default: 0.1"
+   echo -e "\t-d RefDB: nr OR seed"
    exit 1 # Exit script after printing help
 }
 
-while getopts "p:t:a:n:f:e:" opt
+while getopts "p:t:a:n:f:e:d:" opt
 do
    case "$opt" in
       p ) path="$OPTARG" ;;
@@ -22,16 +23,21 @@ do
       n ) R1tag="$OPTARG" ;;
       f ) fqtype="$OPTARG" ;;
       e ) error="$OPTARG" ;;
+      d ) refdb="$OPTARG" ;;
       ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
    esac
 done
 
 # Print helpFunction in case parameters are empty
-if [ -z "$path" ] || [ -z "$threads" ] || [ -z "$assay" ] || [ -z "$R1tag" ] || [ -z "$fqtype" ] || [ -z "$error" ]
+if [ -z "$path" ] || [ -z "$threads" ] || [ -z "$assay" ] || [ -z "$R1tag" ] || [ -z "$fqtype" ] || [ -z "$error" ] || [ -z "$refdb" ]
 then
    echo "Some or all of the parameters are empty";
    helpFunction
 fi
+
+# set base pathes
+# ctrl_wd=$PWD
+# res_wd=${path%/}
 
 ########################
 # check for conda and packages
@@ -97,6 +103,15 @@ sed  -i 's@proj_wd=.*@proj_wd='"$path"'@g' ./mothur_one.batch.local
 sed  -i 's@proc=.*@proc='"$threads"'@g' ./mothur_one.batch.local 
 # set fqtype
 sed  -i 's@fqtype=.*@fqtype='"$fqtype"'@g' ./mothur_one.batch.local 
+# set RefDB path
+if [ $refdb == "seed" ]
+then
+	sed  -i 's@alignref=.*@alignref='"$ctrl_wd"'/RefDB/silva.seed_v138_2.align@g' ./mothur_one.batch.local 
+	sed  -i 's@taxonref=.*@taxonref='"$ctrl_wd"'/RefDB/silva.seed_v138_2.tax@g' ./mothur_one.batch.local 
+else
+	sed  -i 's@alignref=.*@alignref='"$ctrl_wd"'/RefDB/silva.nr_v138_2.align@g' ./mothur_one.batch.local 
+	sed  -i 's@taxonref=.*@taxonref='"$ctrl_wd"'/RefDB/silva.nr_v138_2.tax@g' ./mothur_one.batch.local 
+fi
 
 #exit 
 
