@@ -36,8 +36,8 @@ then
 fi
 
 # set base pathes
-# ctrl_wd=$PWD
-# res_wd=${path%/}
+ctrl_wd=$PWD
+res_wd=${path%/}
 
 ########################
 # check for conda and packages
@@ -54,7 +54,7 @@ echo "$CONDA_PREFIX conda environment activated"
 
 ################
 # Begin script in case all parameters are correct
-#echo "path $path"
+#echo "res_wd $res_wd"
 #echo "assay $assay"
 #echo "R1tag $R1tag"
 
@@ -62,29 +62,29 @@ echo "$CONDA_PREFIX conda environment activated"
 
 #################
 # prep project folder
-if [ ! -d ${path}/fq_in ]
+if [ ! -d ${res_wd}/fq_in ]
 then
-	mkdir ${path}/fq_in
+	mkdir ${res_wd}/fq_in
 fi
 
-if [ ! -d ${path}/cut_out ]
+if [ ! -d ${res_wd}/cut_out ]
 then
-	mkdir ${path}/cut_out
+	mkdir ${res_wd}/cut_out
 fi
 
-if [ ! -d ${path}/log_out ]
+if [ ! -d ${res_wd}/log_out ]
 then
-	mkdir ${path}/log_out
+	mkdir ${res_wd}/log_out
 fi
 
 # move all fq file into fq_in
-find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag}" -print -exec cp {} ${path}/fq_in \;
-find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec cp {} ${path}/fq_in \;
-find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag}" -print -exec rm {} \;
-find ${path} -path "${path}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec rm {} \;
+find ${res_wd} -path "${res_wd}/fq_in" -prune -o -name "*${R1tag}" -print -exec cp {} ${res_wd}/fq_in \;
+find ${res_wd} -path "${res_wd}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec cp {} ${res_wd}/fq_in \;
+find ${res_wd} -path "${res_wd}/fq_in" -prune -o -name "*${R1tag}" -print -exec rm {} \;
+find ${res_wd} -path "${res_wd}/fq_in" -prune -o -name "*${R1tag/1/2}" -print -exec rm {} \;
 
-gzip ${path}/fq_in/*.fastq
-gzip ${path}/fq_in/*.fq
+gzip ${res_wd}/fq_in/*.fastq
+gzip ${res_wd}/fq_in/*.fq
 
 # exit
 
@@ -98,7 +98,7 @@ cp ./mothur_one.batch ./mothur_one.batch.local
 # Environment variable substitution in sed
 # https://stackoverflow.com/questions/584894/environment-variable-substitution-in-sed
 # set path
-sed  -i 's@proj_wd=.*@proj_wd='"$path"'@g' ./mothur_one.batch.local 
+sed  -i 's@proj_wd=.*@proj_wd='"$res_wd"'@g' ./mothur_one.batch.local 
 # set threads
 sed  -i 's@proc=.*@proc='"$threads"'@g' ./mothur_one.batch.local 
 # set fqtype
@@ -153,9 +153,9 @@ esac
 #################
 # cutadapt
 
-> ${path}/log_out/cutadapt_stdout.txt
+> ${res_wd}/log_out/cutadapt_stdout.txt
 
-for i in ${path}/fq_in/*${R1tag}
+for i in ${res_wd}/fq_in/*${R1tag}
 do
 	sample_name=$(basename -s $R1tag $i)
 	R1_name="${sample_name}${R1tag}"
@@ -169,11 +169,11 @@ cutadapt \
 	--max-n 0 \
 	--minimum-length 0 \
 	-e $error \
-	-o ${path}/cut_out/$R1_name \
-	-p ${path}/cut_out/$R2_name \
-	${path}/fq_in/$R1_name \
-	${path}/fq_in/$R2_name \
-	 | tee -a ${path}/log_out/cutadapt_stdout.txt
+	-o ${res_wd}/cut_out/$R1_name \
+	-p ${res_wd}/cut_out/$R2_name \
+	${res_wd}/fq_in/$R1_name \
+	${res_wd}/fq_in/$R2_name \
+	 | tee -a ${res_wd}/log_out/cutadapt_stdout.txt
 done
 
 # exit
@@ -186,15 +186,15 @@ mothur ./mothur_one.batch.local
 #rm ./mothur_one.batch.local
 
 # copy few results file at the end
-cp $path/res_out/*.an.0.03.cons.tax.summary $path/res_out/${path##*/}_taxonomy_table.summary
-cp $path/res_out/*.an.0.03.cons.taxonomy $path/res_out/${path##*/}_taxonomy_list.taxonomy
-cp $path/res_out/*.an.groups.ave-std.summary $path/res_out/${path##*/}_ASV_diversity_data.summary
-cp $path/res_out/*.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV_distribution.shared
-cp $path/res_out/*unique.precluster.denovo.uchime.abund.pick.an.shared $path/res_out/${path##*/}_ASV00_abundance.tsv
-cp $path/res_out/*unique.precluster.denovo.uchime.abund.pick.an.0.03.subsample.shared $path/res_out/${path##*/}_ASV00_abundance_subsampled.tsv
-cp $path/res_out/*good.filter.unique.precluster.denovo.uchime.abund.pick.an.unique.rep.ng.fasta $path/res_out/${path##*/}_ASV00_sequences.fasta
+cp $res_wd/res_out/*.an.0.03.cons.tax.summary $res_wd/res_out/${res_wd##*/}_taxonomy_table.summary
+cp $res_wd/res_out/*.an.0.03.cons.taxonomy $res_wd/res_out/${res_wd##*/}_taxonomy_list.taxonomy
+cp $res_wd/res_out/*.an.groups.ave-std.summary $res_wd/res_out/${res_wd##*/}_ASV_diversity_data.summary
+cp $res_wd/res_out/*.an.0.03.subsample.shared $res_wd/res_out/${res_wd##*/}_ASV_distribution.shared
+cp $res_wd/res_out/*unique.precluster.denovo.uchime.abund.pick.an.shared $res_wd/res_out/${res_wd##*/}_ASV00_abundance.tsv
+cp $res_wd/res_out/*unique.precluster.denovo.uchime.abund.pick.an.0.03.subsample.shared $res_wd/res_out/${res_wd##*/}_ASV00_abundance_subsampled.tsv
+cp $res_wd/res_out/*good.filter.unique.precluster.denovo.uchime.abund.pick.an.unique.rep.ng.fasta $res_wd/res_out/${res_wd##*/}_ASV00_sequences.fasta
 
 # crate crona chart
-python3 ./mothur_krona_XML_gy.py $path/res_out/${path##*/}_taxonomy_table.summary > $path/res_out/${path##*/}_taxonomy_table.summary.xml
-ktImportXML -o $path/res_out/${path##*/}_taxonomy_table.summary.html $path/res_out/${path##*/}_taxonomy_table.summary.xml
+python3 ./mothur_krona_XML_gy.py $res_wd/res_out/${res_wd##*/}_taxonomy_table.summary > $res_wd/res_out/${res_wd##*/}_taxonomy_table.summary.xml
+ktImportXML -o $res_wd/res_out/${res_wd##*/}_taxonomy_table.summary.html $res_wd/res_out/${res_wd##*/}_taxonomy_table.summary.xml
 
